@@ -20,6 +20,8 @@ const serverlessConfiguration: AWS = {
       USER_TABLE_NAME:
         "${opt:stage, self:provider.stage}-${self:service}-user-table",
       STAGE: "${self:provider.stage}",
+      JWT_SECRET: process.env.JWT_SECRET,
+      JWT_TIME_EXPIRATION: process.env.JWT_TIME_EXPIRATION,
     },
     httpApi: {
       id: {
