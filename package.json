@@ -15,7 +15,8 @@
     "@aws-sdk/util-dynamodb": "^3.743.0",
     "@middy/core": "^3.4.0",
     "@middy/http-json-body-parser": "^3.4.0",
-    "ulidx": "^2.4.1"
+    "ulidx": "^2.4.1",
+    "jsonwebtoken": "9.0.2"
   },
   "devDependencies": {
     "@serverless/typescript": "^3.0.0",
