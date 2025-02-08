@@ -16,5 +16,11 @@ export default {
         path: "/auth/login",
       },
     },
+    {
+      http: {
+        method: "options",
+        path: "/auth/login",
+      },
+    },
   ],
 } satisfies AWS["functions"][0];

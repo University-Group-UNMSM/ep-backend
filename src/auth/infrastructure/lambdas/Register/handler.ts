@@ -4,6 +4,7 @@ import { Register } from "src/auth/application/Register";
 import { APIGatewayProxyEventV2 } from "aws-lambda";
 import { UserType } from "src/user/domain/User";
 import { DynamoUserRepository } from "src/user/infrastructure/persistence/dynamo/DynamoUserRepository";
+import { formatPreflightResponse } from "@libs/format-preflight-response";
 
 type RegisterUserSchema = {
   name: string;
@@ -14,6 +15,10 @@ type RegisterUserSchema = {
 };
 
 const handler = async (event: APIGatewayProxyEventV2) => {
+  if (event.requestContext.http.method === "OPTIONS") {
+    return formatPreflightResponse();
+  }
+
   try {
     const body: RegisterUserSchema = JSON.parse(event.body);
 

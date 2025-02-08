@@ -16,5 +16,11 @@ export default {
         path: "/auth/register",
       },
     },
+    {
+      http: {
+        method: "options",
+        path: "/auth/register",
+      },
+    },
   ],
 } satisfies AWS["functions"][0];
