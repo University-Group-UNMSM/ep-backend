@@ -26,7 +26,7 @@ const handler = async (event: APIGatewayProxyEventV2) => {
     const userRepository =
       process.env.STAGE === "dev"
         ? new InMemoryUserRepository()
-        : new DynamoUserRepository(process.env.EMPRENDA_MAS_TABLE_NAME);
+        : new DynamoUserRepository(process.env.EMPRENDE_MAS_TABLE_NAME);
 
     const passwordHasher = new BcryptPasswordHasher();
 
@@ -49,7 +49,7 @@ const handler = async (event: APIGatewayProxyEventV2) => {
 
     return {
       statusCode: 500,
-      body: JSON.stringify({ message: "Error registering the user" }),
+      body: JSON.stringify({ message: error.message }),
     };
   }
 };

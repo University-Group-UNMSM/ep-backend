@@ -3,7 +3,7 @@ type InfrastructureEnvironmentVariables = {
   JWT_SECRET: string;
   JWT_TIME_EXPIRATION: string;
   SALT_ROUNDS: number;
-  EMPRENDA_MAS_TABLE_NAME: string;
+  EMPRENDE_MAS_TABLE_NAME: string;
 };
 
 declare namespace NodeJS {

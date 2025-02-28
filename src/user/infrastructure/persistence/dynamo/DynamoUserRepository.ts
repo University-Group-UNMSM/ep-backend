@@ -84,7 +84,7 @@ export class DynamoUserRepository implements UserRepository {
       },
     });
 
-    if (!entities.length) return null;
+    if (!entities?.length) return null;
 
     return User.fromPrimitives({
       id: entities[0].pk,
