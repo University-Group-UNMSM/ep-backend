@@ -17,8 +17,8 @@ const serverlessConfiguration: AWS = {
     environment: {
       AWS_NODEJS_CONNECTION_REUSE_ENABLED: "1",
       NODE_OPTIONS: "--enable-source-maps --stack-trace-limit=1000",
-      USER_TABLE_NAME:
-        "${opt:stage, self:provider.stage}-${self:service}-user-table",
+      EMPRENDE_MAS_TABLE_NAME:
+        "${opt:stage, self:provider.stage}-${self:service}-table",
       STAGE: "${self:provider.stage}",
     },
     httpApi: {
