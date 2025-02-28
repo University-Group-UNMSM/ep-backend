@@ -1,26 +1,36 @@
-import { User, UserType } from "src/user/domain/User";
 import { UserRepository } from "src/user/domain/UserRepository";
-import * as jwt from "jsonwebtoken";
+import { PasswordHasher } from "../domain/services/PasswordHasher";
+import { JwtEncoder } from "../domain/services/JwtEncoder";
 
 export class Login {
-  constructor(private userRepository: UserRepository) {}
+  constructor(
+    private readonly userRepository: UserRepository,
+    private readonly passwordHasher: PasswordHasher,
+    private readonly jwtEncoder: JwtEncoder
+  ) {}
 
   async run(params: { email: string; password: string }) {
     const user = await this.userRepository.findByEmail(params.email);
 
-    if (user.password !== params.password)
-      throw new Error("Invalid credentials");
+    if (!user) {
+      throw new Error("User not found");
+    }
 
-    const token = jwt.sign(
-      {
-        id: user.id,
-        type: user.type,
-        name: user.name,
-        email: user.email,
-      },
-      process.env.JWT_SECRET,
-      { expiresIn: process.env.JWT_TIME_EXPIRATION }
+    const isPasswordValid = await this.passwordHasher.compare(
+      params.password,
+      user.password
     );
+
+    if (!isPasswordValid) {
+      throw new Error("Invalid credentials");
+    }
+
+    const token = this.jwtEncoder.encode({
+      id: user.id.value,
+      type: user.type,
+      name: user.name,
+      email: user.email,
+    });
 
     return token;
   }

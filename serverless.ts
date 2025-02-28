@@ -1,6 +1,8 @@
 import type { AWS } from "@serverless/typescript";
-
+import { config } from "dotenv";
 import { addProject, login, register } from "@functions/index";
+
+config();
 
 const serverlessConfiguration: AWS = {
   service: "emprende-mas",
