@@ -9,8 +9,9 @@ export class User {
   readonly type: UserType;
   readonly phone: string;
   readonly password: string;
+  profilePhoto: string;
   readonly createdAt: string;
-  readonly updatedAt: string;
+  updatedAt: string;
 
   constructor(
     id: UserId,
@@ -19,6 +20,7 @@ export class User {
     type: UserType,
     phone: string,
     password: string,
+    profilePhoto = "https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small_2x/default-avatar-icon-of-social-media-user-vector.jpg",
     createdAt = new Date().toISOString(),
     updatedAt = new Date().toISOString()
   ) {
@@ -28,6 +30,7 @@ export class User {
     this.type = type;
     this.phone = phone;
     this.password = password;
+    this.profilePhoto = profilePhoto;
     this.createdAt = createdAt;
     this.updatedAt = updatedAt;
   }
@@ -56,6 +59,7 @@ export class User {
     type: UserType;
     phone: string;
     password: string;
+    profilePhoto: string;
     createdAt: string;
     updatedAt: string;
   }): User {
@@ -66,9 +70,15 @@ export class User {
       params.type,
       params.phone,
       params.password,
+      params.profilePhoto,
       params.createdAt,
       params.updatedAt
     );
+  }
+
+  updateProfilePhoto(profilePhoto: string) {
+    this.profilePhoto = profilePhoto;
+    this.updatedAt = new Date().toISOString();
   }
 
   toPrimitives() {
