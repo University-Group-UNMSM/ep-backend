@@ -4,6 +4,7 @@ import { Register } from "src/auth/application/Register";
 import { APIGatewayProxyEventV2 } from "aws-lambda";
 import { UserType } from "src/user/domain/User";
 import { DynamoUserRepository } from "src/user/infrastructure/persistence/dynamo/DynamoUserRepository";
+import { BcryptPasswordHasher } from "../../security/BcryptPasswordHasher";
 
 type RegisterUserSchema = {
   name: string;
@@ -21,7 +22,10 @@ const handler = async (event: APIGatewayProxyEventV2) => {
       process.env.STAGE === "dev"
         ? new InMemoryUserRepository()
         : new DynamoUserRepository(process.env.USER_TABLE_NAME);
-    const registerUserUseCase = new Register(userRepository);
+
+    const passwordHasher = new BcryptPasswordHasher();
+
+    const registerUserUseCase = new Register(userRepository, passwordHasher);
 
     await registerUserUseCase.run({
       name: body.name,

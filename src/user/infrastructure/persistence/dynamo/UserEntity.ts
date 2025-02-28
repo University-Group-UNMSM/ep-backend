@@ -8,6 +8,7 @@ export class UserEntity extends DynamoBaseEntity {
   readonly type: string;
   readonly phone: string;
   readonly password: string;
+  readonly profilePhoto: string;
   readonly createdAt: string;
   readonly updatedAt: string;
 
@@ -18,6 +19,7 @@ export class UserEntity extends DynamoBaseEntity {
     type: string,
     phone: string,
     password: string,
+    profilePhoto: string,
     createdAt: string,
     updatedAt: string
   ) {
@@ -29,6 +31,7 @@ export class UserEntity extends DynamoBaseEntity {
     this.type = type;
     this.phone = phone;
     this.password = password;
+    this.profilePhoto = profilePhoto;
     this.createdAt = createdAt;
     this.updatedAt = updatedAt;
   }
@@ -44,6 +47,8 @@ export class UserEntity extends DynamoBaseEntity {
       password: this.password,
       createdAt: this.createdAt,
       updatedAt: this.updatedAt,
+      profilePhoto: this.profilePhoto,
+      "gsi1-sk": this.email,
     };
   }
 }
