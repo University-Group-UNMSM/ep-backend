@@ -2,6 +2,12 @@ import { User } from "./User";
 
 export interface UserRepository {
   save(user: User): Promise<void>;
-  findAll(): Promise<User[]>;
-  findByEmail(email: string): Promise<User | null>
+  findByEmail(email: string): Promise<User | null>;
+  findAll(
+    limit: number,
+    lastEvaluatedKey?: Record<string, any>
+  ): Promise<{
+    users: User[];
+    lastEvaluatedKey?: Record<string, any>;
+  }>;
 }
