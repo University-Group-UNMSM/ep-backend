@@ -11,13 +11,13 @@ export default {
   },
   events: [
     {
-      http: {
+      httpApi: {
         method: "post",
         path: "/auth/login",
       },
     },
     {
-      http: {
+      httpApi: {
         method: "options",
         path: "/auth/login",
       },
