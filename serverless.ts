@@ -1,6 +1,8 @@
 import type { AWS } from "@serverless/typescript";
-
+import { config } from "dotenv";
 import { addProject, login, register } from "@functions/index";
+
+config();
 
 const serverlessConfiguration: AWS = {
   service: "emprende-mas",
@@ -20,6 +22,8 @@ const serverlessConfiguration: AWS = {
       EMPRENDE_MAS_TABLE_NAME:
         "${opt:stage, self:provider.stage}-${self:service}-table",
       STAGE: "${self:provider.stage}",
+      JWT_SECRET: process.env.JWT_SECRET,
+      JWT_TIME_EXPIRATION: process.env.JWT_TIME_EXPIRATION,
     },
     httpApi: {
       id: {

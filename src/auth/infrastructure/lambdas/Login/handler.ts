@@ -3,6 +3,8 @@ import { InMemoryUserRepository } from "src/user/infrastructure/InMemoryUserRepo
 import { Login } from "src/auth/application/Login";
 import { APIGatewayProxyEventV2 } from "aws-lambda";
 import { DynamoUserRepository } from "src/user/infrastructure/persistence/dynamo/DynamoUserRepository";
+import { BcryptPasswordHasher } from "../../security/BcryptPasswordHasher";
+import { JsonwebtokenJwtEncoder } from "../../security/JsonwebtokenJwtEncoder";
 
 type LoginSchema = {
   email: string;
@@ -18,7 +20,13 @@ const handler = async (event: APIGatewayProxyEventV2) => {
         ? new InMemoryUserRepository()
         : new DynamoUserRepository(process.env.EMPRENDE_MAS_TABLE_NAME);
 
-    const loginUseCase = new Login(userRepository);
+    const passwordHasher = new BcryptPasswordHasher();
+    const jwtEncoder = new JsonwebtokenJwtEncoder(
+      process.env.JWT_SECRET,
+      process.env.JWT_TIME_EXPIRATION
+    );
+
+    const loginUseCase = new Login(userRepository, passwordHasher, jwtEncoder);
 
     const token = await loginUseCase.run({
       email: body.email,
@@ -37,7 +45,7 @@ const handler = async (event: APIGatewayProxyEventV2) => {
 
     return {
       statusCode: 500,
-      body: JSON.stringify({ message: "Error loging" }),
+      body: JSON.stringify({ message: error.message }),
     };
   }
 };
