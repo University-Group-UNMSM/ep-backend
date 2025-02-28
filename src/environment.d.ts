@@ -1,7 +1,7 @@
 type InfrastructureEnvironmentVariables = {
   STAGE: "dev" | "testing" | "production";
-  USER_TABLE_NAME: string;
   SALT_ROUNDS: number;
+  EMPRENDA_MAS_TABLE_NAME: string;
 };
 
 declare namespace NodeJS {
