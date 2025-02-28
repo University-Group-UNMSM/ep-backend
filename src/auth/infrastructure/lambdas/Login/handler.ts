@@ -6,12 +6,19 @@ import { DynamoUserRepository } from "src/user/infrastructure/persistence/dynamo
 import { BcryptPasswordHasher } from "../../security/BcryptPasswordHasher";
 import { JsonwebtokenJwtEncoder } from "../../security/JsonwebtokenJwtEncoder";
 
+import { formatPreflightResponse } from "@libs/format-preflight-response";
+
+
 type LoginSchema = {
   email: string;
   password: string;
 };
 
 const handler = async (event: APIGatewayProxyEventV2) => {
+  if (event.requestContext.http.method === "OPTIONS") {
+    return formatPreflightResponse();
+  }
+
   try {
     const body: LoginSchema = JSON.parse(event.body);
 

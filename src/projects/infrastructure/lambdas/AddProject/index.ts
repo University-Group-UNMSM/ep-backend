@@ -11,7 +11,7 @@ export default {
   },
   events: [
     {
-      http: {
+      httpApi: {
         method: "post",
         path: "/projects",
       },

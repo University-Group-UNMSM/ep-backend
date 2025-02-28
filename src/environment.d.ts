@@ -1,5 +1,7 @@
 type InfrastructureEnvironmentVariables = {
   STAGE: "dev" | "testing" | "production";
+  JWT_SECRET: string;
+  JWT_TIME_EXPIRATION: string;
   SALT_ROUNDS: number;
   EMPRENDE_MAS_TABLE_NAME: string;
   JWT_SECRET: string;
