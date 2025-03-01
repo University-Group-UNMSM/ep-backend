@@ -2,6 +2,8 @@ import { APIGatewayProxyEventV2 } from "aws-lambda";
 import { AddProject } from "src/projects/application/AddProject";
 import { InMemoryProjectRepository } from "../../persistence/InMemoryProjectRepository";
 import { DynamoProjectRepository } from "../../persistence/dynamo/DynamoProjectRepository";
+import { InMemoryUserRepository } from "src/user/infrastructure/InMemoryUserRepository";
+import { DynamoUserRepository } from "src/user/infrastructure/persistence/dynamo/DynamoUserRepository";
 
 type AddProjectSchema = {
   name: string;
@@ -20,7 +22,12 @@ const handler = async (event: APIGatewayProxyEventV2) => {
         ? new InMemoryProjectRepository()
         : new DynamoProjectRepository(process.env.EMPRENDA_MAS_TABLE_NAME);
 
-    const addProjectUseCase = new AddProject(projectRepository);
+    const userRepository =
+      process.env.STAGE === "dev"
+        ? new InMemoryUserRepository()
+        : new DynamoUserRepository(process.env.EMPRENDA_MAS_TABLE_NAME);
+
+    const addProjectUseCase = new AddProject(projectRepository, userRepository);
 
     await addProjectUseCase.run({
       name: body.name,
@@ -39,7 +46,7 @@ const handler = async (event: APIGatewayProxyEventV2) => {
 
     return {
       statusCode: 500,
-      body: JSON.stringify({ message: "Error al crear el proyecto" }),
+      body: JSON.stringify({ message: error.message }),
     };
   }
 };

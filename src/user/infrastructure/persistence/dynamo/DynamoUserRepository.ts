@@ -98,4 +98,22 @@ export class DynamoUserRepository implements UserRepository {
       updatedAt: entities[0].updatedAt,
     });
   }
+
+  async findById(id: string): Promise<User | null> {
+    const entity = await this.client.findOne({ pk: id, sk: "USER" });
+
+    if (!entity) return null;
+
+    return User.fromPrimitives({
+      id: entity.pk,
+      name: entity.name,
+      email: entity.email,
+      type: entity.type as UserType,
+      phone: entity.phone,
+      password: entity.password,
+      profilePhoto: entity.profilePhoto,
+      createdAt: entity.createdAt,
+      updatedAt: entity.updatedAt,
+    });
+  }
 }
