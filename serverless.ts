@@ -20,6 +20,8 @@ const serverlessConfiguration: AWS = {
       USER_TABLE_NAME:
         "${opt:stage, self:provider.stage}-${self:service}-user-table",
       STAGE: "${self:provider.stage}",
+      EMPRENDE_MAS_TABLE_NAME:
+        "${opt:stage, self:provider.stage}-${self:service}-table",
     },
     httpApi: {
       id: {
