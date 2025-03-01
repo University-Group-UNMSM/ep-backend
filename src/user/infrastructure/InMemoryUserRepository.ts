@@ -1,5 +1,6 @@
 import {
   DynamoDBClient,
+  GetItemCommand,
   PutItemCommand,
   QueryCommand,
 } from "@aws-sdk/client-dynamodb";
@@ -100,5 +101,35 @@ export class InMemoryUserRepository implements UserRepository {
       users: [],
       lastEvaluatedKey: undefined,
     };
+  }
+
+  async findById(id: string): Promise<User | null> {
+    const record = (
+      await this.client.send(
+        new GetItemCommand({
+          TableName: this.table,
+          Key: {
+            pk: { S: id },
+            sk: { S: "USER" },
+          },
+        })
+      )
+    ).Item;
+
+    if (record === undefined) return null;
+
+    const userEntity = unmarshall(record) as UserEntity;
+
+    return User.fromPrimitives({
+      id: userEntity.pk,
+      name: userEntity.name,
+      email: userEntity.email,
+      type: userEntity.type as UserType,
+      phone: userEntity.phone,
+      password: userEntity.password,
+      profilePhoto: userEntity.profilePhoto,
+      createdAt: userEntity.createdAt,
+      updatedAt: userEntity.updatedAt,
+    });
   }
 }

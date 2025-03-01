@@ -10,4 +10,5 @@ export interface UserRepository {
     users: User[];
     lastEvaluatedKey?: Record<string, any>;
   }>;
+  findById(id: string): Promise<User | null>;
 }
