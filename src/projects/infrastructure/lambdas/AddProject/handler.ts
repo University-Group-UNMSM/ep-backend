@@ -25,7 +25,7 @@ const handler = async (event: APIGatewayProxyEventV2) => {
     const userRepository =
       process.env.STAGE === "dev"
         ? new InMemoryUserRepository()
-        : new DynamoUserRepository(process.env.EMPRENDA_MAS_TABLE_NAME);
+        : new DynamoUserRepository(process.env.EMPRENDE_MAS_TABLE_NAME);
 
     const addProjectUseCase = new AddProject(projectRepository, userRepository);
 
