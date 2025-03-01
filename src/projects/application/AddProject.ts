@@ -1,8 +1,19 @@
 import { ProjectRepository } from "../domain/ProjectRepository";
-import { Project } from "../domain/Project";
+import { UserRepository } from "src/user/domain/UserRepository";
+import { AddProjectToUser } from "./service/AddProjectToUser";
 
 export class AddProject {
-  constructor(private readonly projectRepository: ProjectRepository) {}
+  private readonly addProjectService: AddProjectToUser;
+
+  constructor(
+    projectRepository: ProjectRepository,
+    userRepository: UserRepository
+  ) {
+    this.addProjectService = new AddProjectToUser(
+      projectRepository,
+      userRepository
+    );
+  }
 
   async run(params: {
     name: string;
@@ -11,7 +22,6 @@ export class AddProject {
     investmentAmount: number;
     userId: string;
   }): Promise<void> {
-    const project = Project.create(params);
-    await this.projectRepository.save(project);
+    await this.addProjectService.run(params);
   }
 }
