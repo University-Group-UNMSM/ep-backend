@@ -117,6 +117,7 @@ export class DynamoProjectRepository implements ProjectRepository {
         ExpressionAttributeNames: {
           "#pk": "sk",
         },
+        IndexName: "GSI4",
         KeyConditionExpression: "#pk = :pk",
         ExpressionAttributeValues: {
           ":pk": { S: "PROJECT" },
