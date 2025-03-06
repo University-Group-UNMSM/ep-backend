@@ -51,6 +51,10 @@ export class Project {
     );
   }
 
+  addRating(rating: number): void {
+    this.rating = rating;
+  }
+
   static fromPrimitives(params: {
     id: string;
     name: string;
