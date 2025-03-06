@@ -171,53 +171,44 @@ export class InMemoryProjectRepository implements ProjectRepository {
     limit: number,
     lastEvaluatedKey?: Record<string, any>
   ): Promise<{ projects: Project[]; lastEvaluatedKey?: Record<string, any> }> {
-    const records = (
-      await this.client.send(
-        new QueryCommand({
-          TableName: this.table,
-          IndexName: "GSI4",
-          ExpressionAttributeNames: {
-            "#pk": "sk",
-            "#sk": "gsi4-sk",
-          },
-          KeyConditionExpression: "#pk = :pk AND begins_with(#sk, :sk)",
-          ExpressionAttributeValues: {
-            ":pk": { S: "PROJECT" },
-            ":sk": { S: lastEvaluatedKey?.sk || "" },
-          },
-          Limit: limit,
-        })
-      )
-    ).Items;
-
-    if (
-      records === undefined ||
-      records.length === 0 ||
-      records[0] === undefined
-    )
-      return { projects: [], lastEvaluatedKey: undefined };
-
-    const projectEntities = records.map(
-      (item) => unmarshall(item) as ProjectEntity
-    );
-
-    const projects = projectEntities.map((entity) =>
-      Project.fromPrimitives({
-        id: entity.pk,
-        name: entity.name,
-        description: entity.description,
-        image: entity.image,
-        investmentAmount: entity.investmentAmount,
-        rating: entity.rating,
-        userId: entity.userId,
-        createdAt: entity.createdAt,
-        updatedAt: entity.updatedAt,
+    const records = await this.client.send(
+      new QueryCommand({
+        TableName: this.table,
+        IndexName: "GSI4",
+        ExpressionAttributeNames: {
+          "#pk": "sk",
+        },
+        KeyConditionExpression: "#pk = :pk",
+        ExpressionAttributeValues: {
+          ":pk": { S: "PROJECT" },
+        },
+        Limit: limit,
+        ExclusiveStartKey: lastEvaluatedKey || undefined,
       })
     );
 
-    return {
-      projects,
-      lastEvaluatedKey: { sk: projectEntities[projectEntities.length - 1].sk },
-    };
+    const items = records.Items
+      ? records.Items.map((item) => unmarshall(item) as ProjectEntity)
+      : [];
+
+    if (!items.length) {
+      return { projects: [], lastEvaluatedKey: undefined };
+    }
+
+    const projects = items.map((item) =>
+      Project.fromPrimitives({
+        id: item.pk,
+        name: item.name,
+        description: item.description,
+        image: item.image,
+        investmentAmount: item.investmentAmount,
+        rating: item.rating,
+        userId: item.userId,
+        createdAt: item.createdAt,
+        updatedAt: item.updatedAt,
+      })
+    );
+
+    return { projects, lastEvaluatedKey: records.LastEvaluatedKey };
   }
 }

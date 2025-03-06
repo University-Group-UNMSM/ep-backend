@@ -78,4 +78,18 @@ export class Project {
       params.updatedAt
     );
   }
+
+  toPrimitives() {
+    return {
+      id: this.id.value,
+      name: this.name,
+      description: this.description,
+      image: this.image,
+      investmentAmount: this.investmentAmount,
+      rating: this.rating,
+      userId: this.userId,
+      createdAt: this.createdAt,
+      updatedAt: this.updatedAt,
+    };
+  }
 }

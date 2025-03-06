@@ -97,4 +97,28 @@ export class DynamoDbClient<
 
     return records.map((item) => unmarshall(item) as T);
   }
+
+  async queryWithPagination(
+    payload: Partial<QueryInput>,
+    limit: number,
+    lastEvaluatedKey?: Record<string, any>
+  ): Promise<{ items: T[]; lastEvaluatedKey?: Record<string, any> }> {
+    const records = await this.send(
+      new QueryCommand({
+        ...payload,
+        TableName: this.table,
+        Limit: limit,
+        ExclusiveStartKey: lastEvaluatedKey || undefined,
+      })
+    );
+
+    const items = records.Items
+      ? records.Items.map((item) => unmarshall(item) as T)
+      : [];
+
+    return {
+      items,
+      lastEvaluatedKey: records.LastEvaluatedKey,
+    };
+  }
 }

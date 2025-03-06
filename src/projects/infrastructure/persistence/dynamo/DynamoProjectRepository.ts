@@ -112,36 +112,37 @@ export class DynamoProjectRepository implements ProjectRepository {
     limit: number,
     lastEvaluatedKey?: Record<string, any>
   ): Promise<{ projects: Project[]; lastEvaluatedKey?: Record<string, any> }> {
-    const entities = await this.client.query({
-      ExpressionAttributeNames: {
-        "#pk": "sk",
-        "#sk": "gsi4-sk",
+    const result = await this.client.queryWithPagination(
+      {
+        ExpressionAttributeNames: {
+          "#pk": "sk",
+        },
+        KeyConditionExpression: "#pk = :pk",
+        ExpressionAttributeValues: {
+          ":pk": { S: "PROJECT" },
+        },
       },
-      KeyConditionExpression: "#pk = :pk AND begins_with(#sk, :sk)",
-      ExpressionAttributeValues: {
-        ":pk": { S: "PROJECT" },
-        ":sk": { S: lastEvaluatedKey?.sk || "" },
-      },
-      Limit: limit,
-    });
+      limit,
+      lastEvaluatedKey
+    );
 
-    if (!entities.length) return { projects: [], lastEvaluatedKey: undefined };
+    if (!result.items.length)
+      return { projects: [], lastEvaluatedKey: undefined };
 
-    return {
-      projects: entities.map((entity) =>
-        Project.fromPrimitives({
-          id: entity.pk,
-          name: entity.name,
-          description: entity.description,
-          image: entity.image,
-          investmentAmount: entity.investmentAmount,
-          rating: entity.rating,
-          userId: entity.userId,
-          createdAt: entity.createdAt,
-          updatedAt: entity.updatedAt,
-        })
-      ),
-      lastEvaluatedKey: { sk: entities[entities.length - 1].sk },
-    };
+    const projects = result.items.map((item) =>
+      Project.fromPrimitives({
+        id: item.pk,
+        name: item.name,
+        description: item.description,
+        image: item.image,
+        investmentAmount: item.investmentAmount,
+        rating: item.rating,
+        userId: item.userId,
+        createdAt: item.createdAt,
+        updatedAt: item.updatedAt,
+      })
+    );
+
+    return { projects, lastEvaluatedKey: result.lastEvaluatedKey };
   }
 }

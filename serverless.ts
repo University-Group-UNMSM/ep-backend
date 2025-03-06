@@ -4,6 +4,7 @@ import {
   addProject,
   addRating,
   getMyProfile,
+  listAllProjects,
   login,
   register,
 } from "@functions/index";
@@ -35,7 +36,14 @@ const serverlessConfiguration: AWS = {
     },
   },
   // import the function via paths
-  functions: { register, login, addProject, getMyProfile, addRating },
+  functions: {
+    register,
+    login,
+    addProject,
+    getMyProfile,
+    addRating,
+    listAllProjects,
+  },
   package: { individually: true },
   custom: {
     esbuild: {
