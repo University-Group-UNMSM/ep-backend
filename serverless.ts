@@ -1,6 +1,12 @@
 import type { AWS } from "@serverless/typescript";
 import { config } from "dotenv";
-import { addProject, getMyProfile, login, register } from "@functions/index";
+import {
+  addProject,
+  addRating,
+  getMyProfile,
+  login,
+  register,
+} from "@functions/index";
 
 config();
 
@@ -29,7 +35,7 @@ const serverlessConfiguration: AWS = {
     },
   },
   // import the function via paths
-  functions: { register, login, addProject, getMyProfile },
+  functions: { register, login, addProject, getMyProfile, addRating },
   package: { individually: true },
   custom: {
     esbuild: {
