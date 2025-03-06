@@ -1,6 +1,7 @@
 import { UserRepository } from "src/user/domain/UserRepository";
 import { PasswordHasher } from "../domain/services/PasswordHasher";
 import { JwtEncoder } from "../domain/services/JwtEncoder";
+import { ITokenPayload } from "../domain/interfaces/ITokenPayload";
 
 export class Login {
   constructor(
@@ -25,7 +26,7 @@ export class Login {
       throw new Error("Invalid credentials");
     }
 
-    const token = this.jwtEncoder.encode({
+    const token = this.jwtEncoder.encode<ITokenPayload>({
       id: user.id.value,
       type: user.type,
       name: user.name,

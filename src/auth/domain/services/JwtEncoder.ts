@@ -1,5 +1,5 @@
 export interface JwtEncoder {
-    encode(payload: any): string;
-    decode(token: string): any;
-  }
+  encode<T>(payload: T): string;
+  decode<T>(token: string): T;
+}
   
