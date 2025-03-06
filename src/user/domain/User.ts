@@ -89,6 +89,7 @@ export class User {
       type: this.type,
       phone: this.phone,
       password: this.password,
+      profilePhoto: this.profilePhoto,
       createdAt: this.createdAt,
       updatedAt: this.updatedAt,
     };
