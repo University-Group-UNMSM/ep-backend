@@ -91,8 +91,9 @@ export class DynamoDbClient<
       records === undefined ||
       records.length === 0 ||
       records[0] === undefined
-    )
+    ) {
       return undefined;
+    }
 
     return records.map((item) => unmarshall(item) as T);
   }

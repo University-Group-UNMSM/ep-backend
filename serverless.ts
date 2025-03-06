@@ -1,6 +1,8 @@
 import type { AWS } from "@serverless/typescript";
+import { config } from "dotenv";
+import { addProject, getMyProfile, login, register } from "@functions/index";
 
-import { login, register } from "@functions/index";
+config();
 
 const serverlessConfiguration: AWS = {
   service: "emprende-mas",
@@ -10,16 +12,14 @@ const serverlessConfiguration: AWS = {
     name: "aws",
     runtime: "nodejs20.x",
     stage: "${opt:stage, 'dev'}",
-    apiGateway: {
-      minimumCompressionSize: 1024,
-      shouldStartNameWithService: true,
-    },
     environment: {
       AWS_NODEJS_CONNECTION_REUSE_ENABLED: "1",
       NODE_OPTIONS: "--enable-source-maps --stack-trace-limit=1000",
-      USER_TABLE_NAME:
-        "${opt:stage, self:provider.stage}-${self:service}-user-table",
+      EMPRENDE_MAS_TABLE_NAME:
+        "${opt:stage, self:provider.stage}-${self:service}-table",
       STAGE: "${self:provider.stage}",
+      JWT_SECRET: process.env.JWT_SECRET,
+      JWT_TIME_EXPIRATION: process.env.JWT_TIME_EXPIRATION,
     },
     httpApi: {
       id: {
@@ -29,7 +29,7 @@ const serverlessConfiguration: AWS = {
     },
   },
   // import the function via paths
-  functions: { register, login },
+  functions: { register, login, addProject, getMyProfile },
   package: { individually: true },
   custom: {
     esbuild: {

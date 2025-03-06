@@ -84,7 +84,7 @@ export class DynamoUserRepository implements UserRepository {
       },
     });
 
-    if (!entities.length) return null;
+    if (!entities?.length) return null;
 
     return User.fromPrimitives({
       id: entities[0].pk,
@@ -99,28 +99,21 @@ export class DynamoUserRepository implements UserRepository {
     });
   }
 
-  async findByEmail(email: string): Promise<User | null> {
-    const entity = await this.client.query({
-      IndexName: 'GSI1',
-      KeyConditionExpression: "email = :email",
-      ExpressionAttributeValues: {
-        ":email": { S: email },
-      },
-    })
+  async findById(id: string): Promise<User | null> {
+    const entity = await this.client.findOne({ pk: id, sk: "USER" });
 
-    if (!entity.length) return null;
+    if (!entity) return null;
 
-    const user = User.fromPrimitives({
-      id: entity[0].pk,
-      name: entity[0].name,
-      email: entity[0].email,
-      type: entity[0].type as UserType,
-      phone: entity[0].phone,
-      password: entity[0].password,
-      createdAt: entity[0].createdAt,
-      updatedAt: entity[0].updatedAt,
-    })
-
-    return user;
+    return User.fromPrimitives({
+      id: entity.pk,
+      name: entity.name,
+      email: entity.email,
+      type: entity.type as UserType,
+      phone: entity.phone,
+      password: entity.password,
+      profilePhoto: entity.profilePhoto,
+      createdAt: entity.createdAt,
+      updatedAt: entity.updatedAt,
+    });
   }
 }
