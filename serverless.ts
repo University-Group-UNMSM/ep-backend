@@ -5,6 +5,7 @@ import {
   addRating,
   getMyProfile,
   listAllProjects,
+  listProjectsByUser,
   login,
   register,
 } from "@functions/index";
@@ -43,6 +44,7 @@ const serverlessConfiguration: AWS = {
     getMyProfile,
     addRating,
     listAllProjects,
+    listProjectsByUser,
   },
   package: { individually: true },
   custom: {
