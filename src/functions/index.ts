@@ -4,3 +4,4 @@ export { default as addProject } from "../projects/infrastructure/lambdas/AddPro
 export { default as getMyProfile } from "../auth/infrastructure/lambdas/GetMyProfile";
 export { default as addRating } from "../projects/infrastructure/lambdas/AddRating";
 export { default as listAllProjects } from "../projects/infrastructure/lambdas/ListAllProjects";
+export { default as listProjectsByUser } from "../user/infrastructure/lambdas/ListProjectsByUser";

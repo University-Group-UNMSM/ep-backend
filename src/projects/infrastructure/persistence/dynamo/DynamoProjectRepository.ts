@@ -78,22 +78,31 @@ export class DynamoProjectRepository implements ProjectRepository {
     });
   }
 
-  async findByUserId(userId: string): Promise<Project[]> {
-    const entities = await this.client.query({
-      ExpressionAttributeNames: {
-        "#pk": "sk",
-        "#sk": "gsi3-sk",
+  async findByUserId(
+    userId: string,
+    limit: number,
+    lastEvaluatedKey?: Record<string, any>
+  ): Promise<{ projects: Project[]; lastEvaluatedKey?: Record<string, any> }> {
+    const result = await this.client.queryWithPagination(
+      {
+        ExpressionAttributeNames: {
+          "#pk": "sk",
+          "#sk": "gsi3-sk",
+        },
+        KeyConditionExpression: "#pk = :pk AND #sk = :sk",
+        ExpressionAttributeValues: {
+          ":pk": { S: "PROJECT" },
+          ":sk": { S: userId },
+        },
       },
-      KeyConditionExpression: "#pk = :pk AND #sk = :sk",
-      ExpressionAttributeValues: {
-        ":pk": { S: "PROJECT" },
-        ":sk": { S: userId },
-      },
-    });
+      limit,
+      lastEvaluatedKey
+    );
 
-    if (!entities.length) return [];
+    if (!result.items.length)
+      return { projects: [], lastEvaluatedKey: undefined };
 
-    return entities.map((entity) =>
+    const projects = result.items.map((entity) =>
       Project.fromPrimitives({
         id: entity.pk,
         name: entity.name,
@@ -106,6 +115,8 @@ export class DynamoProjectRepository implements ProjectRepository {
         updatedAt: entity.updatedAt,
       })
     );
+
+    return { projects, lastEvaluatedKey: result.lastEvaluatedKey };
   }
 
   async findAll(
